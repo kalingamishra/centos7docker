@@ -1,0 +1,23 @@
+node {
+      stage('Pull code from Git Repo') { // for display purposes
+      // Get some code from a GitHub repository
+      git credentialsId: 'GIT', url: 'https://github.com/kalingamishra/centos7docker.git'
+                                        }
+      
+     
+   stage('Docker build')
+        {
+       sh '/usr/bin/docker build -t devopsdocker09/centos7docker:PipelineTest .'
+        }
+    stage('Docker Push')
+    {
+    //    sh '/usr/bin/docker login -u "devopsdocker09" -p "0msairam" '
+    withCredentials([usernamePassword(credentialsId: 'DOCKER', passwordVariable: 'dockerpwd', usernameVariable: 'dockerid')])
+    {
+        sh'/usr/bin/docker login -u $dockerid -p $dockerpwd'
+    }
+    sh'/usr/bin/docker push devopsdocker09/centos7docker:PipelineTest '
+    //sh'/usr/bin/docker push PipelineTest '
+    
+    }   
+   }
